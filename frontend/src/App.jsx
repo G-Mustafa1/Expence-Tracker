@@ -15,18 +15,18 @@ import { checkAuth } from './features/authSlice';
 import { fetchDashboardData } from './features/dashboardSlice';
 
 function App() {
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth?.user);
+  // const dispatch = useDispatch();
+  // const user = useSelector((state) => state.auth?.user);
 
-  useEffect(() => {
-    dispatch(checkAuth());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(checkAuth());
+  // }, []);
 
-  useEffect(() => {
-    if (user?._id) {
-      dispatch(fetchDashboardData());
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user?._id) {
+  //     dispatch(fetchDashboardData());
+  //   }
+  // }, [user]);
 
   return (
     <Routes>
