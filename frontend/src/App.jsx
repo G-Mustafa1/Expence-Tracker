@@ -19,12 +19,10 @@ function App() {
   const { user, loading } = useSelector((state) => state.auth);
 
 
-  // ✅ Run ONLY once on app start
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  // ✅ Fetch dashboard data after user is set
   useEffect(() => {
     if (user) {
       dispatch(fetchDashboardData());

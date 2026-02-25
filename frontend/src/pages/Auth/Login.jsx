@@ -1,3 +1,4 @@
+import React from 'react'
 import React, { useState, useEffect } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -5,45 +6,44 @@ import { login } from '../../features/authSlice';
 import toast from 'react-hot-toast';
 
 const Login = () => {
-    const [emailAddress, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [localError, setLocalError] = useState("");
+        const [emailAddress, setEmail] = useState("");
+        const [password, setPassword] = useState("");
+        const [localError, setLocalError] = useState("");
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+        const dispatch = useDispatch();
+        const navigate = useNavigate();
 
-    const { user, loading, error } = useSelector(state => state.auth);
+        const { user, loading, error } = useSelector(state => state.auth);
 
-    // console.log("user", user);
+        // console.log("user", user);
 
 
-    useEffect(() => {
-        if (user) {
-            navigate("/dashboard");
-            toast.success("Login successful!", { id: "login-toast" });
-        }
-    }, [user, navigate]);
+        useEffect(() => {
+            if (user) {
+                navigate("/dashboard");
+                toast.success("Login successful!", { id: "login-toast" });
+            }
+        }, [user, navigate]);
 
-    //   if (user) return <Navigate to="/dashboard" replace />;
+        //   if (user) return <Navigate to="/dashboard" replace />;
 
-    const handleLogin = (e) => {
-        e.preventDefault();
+        const handleLogin = (e) => {
+            e.preventDefault();
 
-        if (!emailAddress.trim()) {
-            setLocalError("Email is required");
-            return;
-        }
+            if (!emailAddress.trim()) {
+                setLocalError("Email is required");
+                return;
+            }
 
-        if (!password.trim() || password.length < 6) {
-            setLocalError("Password must be at least 6 characters");
-            return;
-        }
+            if (!password.trim() || password.length < 6) {
+                setLocalError("Password must be at least 6 characters");
+                return;
+            }
 
-        setLocalError("");
-        toast.loading("Logging in...", { id: "login-toast" }); // Show loading toast
-        dispatch(login({ emailAddress, password }));
-    };
-
+            setLocalError("");
+            toast.loading("Logging in...", { id: "login-toast" }); // Show loading toast
+            dispatch(login({ emailAddress, password }));
+        };
     return (
         <form onSubmit={handleLogin} className="space-y-6">
             <div>
