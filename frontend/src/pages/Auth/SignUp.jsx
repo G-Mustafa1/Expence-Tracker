@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { register } from '../../features/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
 
 const SignUp = () => {
     const dispatch = useDispatch();
@@ -18,6 +19,8 @@ const SignUp = () => {
     useEffect(() => {
         if (user) {
             navigate("/dashboard");
+            toast.success("Login successful!", { id: "login-toast" });
+
         }
     }, [user, navigate]);
 

@@ -1,29 +1,38 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { LayoutDashboard, Wallet, CreditCard, User, X, Menu } from "lucide-react";
+import { LayoutDashboard, Wallet, CreditCard, User, X, Menu, LogOut } from "lucide-react";
 import { logout } from "../features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "./Loader";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, loading } = useSelector((state) => state.auth);
+
+  // console.log("user", user);
+
 
   const navLinks = [
     { name: "Home", path: "/dashboard", icon: LayoutDashboard },
     { name: "Income", path: "/dashboard/income", icon: Wallet },
     { name: "Expenses", path: "/dashboard/expenses", icon: CreditCard },
-    { name: "Profile", path: "/dashboard/profile", icon: User },
+    // { name: "Profile", path: "/dashboard/profile", icon: User },
   ];
 
   const handleLogout = () => {
+    toast.success("Logout successful!", { id: "logout-toast" });
     dispatch(logout());
     navigate("/");
   };
 
   const UserProfile = () => {
+    if (loading) {
+      return <Loader />;
+    }
     if (!user) return null;
     return (
       <div className="flex items-center gap-3 mb-6">
@@ -56,8 +65,7 @@ const Sidebar = () => {
                   to={link.path}
                   end={link.path === "/dashboard"}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ${
-                      isActive ? "bg-blue-600 shadow-md scale-[1.02]" : "hover:bg-gray-700 hover:scale-[1.01]"
+                    `flex items-center gap-3 px-4 py-2 rounded-lg transition-all duration-200 ${isActive ? "bg-blue-600 shadow-md scale-[1.02]" : "hover:bg-gray-700 hover:scale-[1.01]"
                     }`
                   }
                 >
@@ -66,15 +74,15 @@ const Sidebar = () => {
                 </NavLink>
               );
             })}
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 text-left bg-red-500 hover:bg-red-600 py-2 rounded-lg font-medium transition"
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
           </nav>
         </div>
-
-        <button
-          onClick={handleLogout}
-          className="w-full bg-red-500 hover:bg-red-600 py-2 rounded-lg font-medium transition"
-        >
-          Logout
-        </button>
       </div>
 
       {/* Mobile Top Navbar */}
@@ -99,8 +107,7 @@ const Sidebar = () => {
                 end={link.path === "/dashboard"}
                 onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                    isActive ? "bg-blue-600 shadow-md" : "hover:bg-gray-700"
+                  `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive ? "bg-blue-600 shadow-md" : "hover:bg-gray-700"
                   }`
                 }
               >

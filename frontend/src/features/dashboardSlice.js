@@ -1,40 +1,15 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../api/api";
-// import * as XLSX from "xlsx";
-// import { saveAs } from "f";
-
-// Download Excel
-// export const handleDownloadExcel = (dataArray, type) => {
-//   if (!dataArray || dataArray.length === 0) {
-//     alert(`No ${type} data to download!`);
-//     return;
-//   }
-
-//   const worksheet = XLSX.utils.json_to_sheet(
-//     dataArray.map((item, index) => ({
-//       S_No: index + 1,
-//       Icon: item.icon,
-//       Source: item.source || item.category,
-//       Date: new Date(item.date).toLocaleDateString(),
-//       Amount: item.amount,
-//     }))
-//   );
-
-//   const workbook = XLSX.utils.book_new();
-//   XLSX.utils.book_append_sheet(workbook, worksheet, `${type}s`);
-//   const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-//   const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-//   saveAs(blob, `${type}_List_${new Date().toISOString().split("T")[0]}.xlsx`);
-// };
 
 // Fetch dashboard data
 export const fetchDashboardData = createAsyncThunk(
   "dashboard/fetchDashboardData",
   async (_, { rejectWithValue }) => {
-    console.log("Fetching dashboard data...", rejectWithValue);
     try {
-      const { data } = await api.get("/api/dashboard/dashboard-data", { withCredentials: true });
-      console.log(data);
+      const { data } = await api.get("/api/dashboard/dashboard-data", {
+        withCredentials: true,
+      });
+      // console.log("dashboard data",data);
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed to fetch dashboard data");
@@ -42,14 +17,14 @@ export const fetchDashboardData = createAsyncThunk(
   }
 );
 
-
 // Add income or expense
 export const addIncomeExpense = createAsyncThunk(
   "dashboard/addIncomeExpense",
   async ({ show, payload }, { rejectWithValue }) => {
-    console.log("Adding", show, payload);
     try {
-      const { data } = await api.post(`/api/${show}/add-${show}`, payload, { withCredentials: true });
+      const { data } = await api.post(`/api/${show}/add-${show}`, payload, {
+        withCredentials: true,
+      });
       return { type: show, item: data[show] || data.expense || data.income || data };
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed to add data");
@@ -61,9 +36,10 @@ export const addIncomeExpense = createAsyncThunk(
 export const deleteIncomeExpense = createAsyncThunk(
   "dashboard/deleteIncomeExpense",
   async ({ id, show }, { rejectWithValue }) => {
-    console.log("Deleting", show, id);
     try {
-      await api.delete(`/api/${show}/delete-${show}/${id}`, { withCredentials: true });
+      await api.delete(`/api/${show}/delete-${show}/${id}`, {
+        withCredentials: true,
+      });
       return { id, type: show };
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed to delete");
@@ -104,7 +80,6 @@ const dashboardSlice = createSlice({
       .addCase(addIncomeExpense.fulfilled, (state, action) => {
         if (action.payload.type === "income") state.income.unshift(action.payload.item);
         if (action.payload.type === "expense") state.expense.unshift(action.payload.item);
-        // recalc totals
         state.totalIncome = state.income.reduce((sum, i) => sum + i.amount, 0);
         state.totalExpense = state.expense.reduce((sum, i) => sum + i.amount, 0);
         state.balance = state.totalIncome - state.totalExpense;
@@ -112,7 +87,6 @@ const dashboardSlice = createSlice({
       .addCase(deleteIncomeExpense.fulfilled, (state, action) => {
         if (action.payload.type === "income") state.income = state.income.filter(i => i._id !== action.payload.id);
         if (action.payload.type === "expense") state.expense = state.expense.filter(e => e._id !== action.payload.id);
-        // recalc totals
         state.totalIncome = state.income.reduce((sum, i) => sum + i.amount, 0);
         state.totalExpense = state.expense.reduce((sum, i) => sum + i.amount, 0);
         state.balance = state.totalIncome - state.totalExpense;

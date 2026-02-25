@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import AddIncome from "../../components/AddIncome";
 import AddExpense from "../../components/AddExpence";
 import { openModal } from "../../features/modalSlice";
+import Loader from "../../components/Loader";
 
 const COLORS = ["#22c55e", "#f43f5e", "#3b82f6", "#a855f7", "#facc15"];
 const formatDateKey = (d) => new Date(d).toISOString().slice(0, 10);
@@ -47,6 +48,7 @@ export default function Home() {
   ];
 
   return (
+    <>
     <div className="p-6 space-y-10 text-slate-900 min-h-screen">
       <Toaster position="top-right" toastOptions={{ style: { zIndex: 99999 } }} />
 
@@ -54,7 +56,7 @@ export default function Home() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-2">
-            <LayoutDashboard className="text-indigo-400" /> Dashboard
+            <LayoutDashboard className="text-indigo-400 w-8 h-8" /> Dashboard
           </h1>
           <p className="text-slate-400 mt-1 text-sm">Welcome back! Here's your financial overview.</p>
         </div>
@@ -167,5 +169,6 @@ export default function Home() {
         </div>
       )}
     </div>
+    </>
   );
 }

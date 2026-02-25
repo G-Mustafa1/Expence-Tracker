@@ -12,10 +12,12 @@ import Home from './pages/Dashboard/Home';
 import Income from './pages/Dashboard/Income';
 import Expence from './pages/Dashboard/Expence';
 import { Routes, Route } from 'react-router-dom';
+import Loader from './components/Loader';
 
 function App() {
   const dispatch = useDispatch();
-  const { user , isLogin } = useSelector((state) => state.auth);
+  const { user, loading } = useSelector((state) => state.auth);
+
 
   // ✅ Run ONLY once on app start
   useEffect(() => {
@@ -28,6 +30,12 @@ function App() {
       dispatch(fetchDashboardData());
     }
   }, [user, dispatch]);
+
+  
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <Routes>
       {/* Auth routes */}

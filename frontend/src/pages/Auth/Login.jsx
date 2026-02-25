@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../../features/authSlice';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const [emailAddress, setEmail] = useState("");
@@ -13,11 +14,13 @@ const Login = () => {
 
     const { user, loading, error } = useSelector(state => state.auth);
 
+    // console.log("user", user);
+
+
     useEffect(() => {
-        console.log('user')
-        console.log(user);
         if (user) {
             navigate("/dashboard");
+            toast.success("Login successful!", { id: "login-toast" });
         }
     }, [user, navigate]);
 
@@ -37,7 +40,7 @@ const Login = () => {
         }
 
         setLocalError("");
-
+        toast.loading("Logging in...", { id: "login-toast" }); // Show loading toast
         dispatch(login({ emailAddress, password }));
     };
 
