@@ -200,19 +200,104 @@
 
 
 
+// import React, { useEffect, useState } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { deleteIncomeExpense, fetchDashboardData } from "../../features/dashboardSlice";
+// import AddIncome from "../../components/AddIncome";
+// import AddExpense from "../../components/AddExpence";
+// // import { fetchDashboardData, deleteIncomeExpense, handleDownloadExcel } from "../redux/dashboardSlice";
+// // import Addincome from "./Addincome";
+// // import Addexpense from "./Addexpense";
+
+// const Dashboard = () => {
+//   const dispatch = useDispatch();
+//   const { income, expense, totalIncome, totalExpense, balance, loading } = useSelector(state => state.dashboard);
+  
+//   const [showIncomeModal, setShowIncomeModal] = useState(false);
+//   const [showExpenseModal, setShowExpenseModal] = useState(false);
+
+//   useEffect(() => {
+//     dispatch(fetchDashboardData());
+//   }, [dispatch]);
+
+//   const handleDelete = (id, type) => {
+//     if (window.confirm("Are you sure?")) {
+//       dispatch(deleteIncomeExpense({ id, show: type }));
+//     }
+//   };
+
+//   return (
+//     <div className="p-4">
+//       <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+//       <div className="mb-4">
+//         <button onClick={() => setShowIncomeModal(true)} className="btn">Add Income</button>
+//         <button onClick={() => setShowExpenseModal(true)} className="btn ml-2">Add Expense</button>
+//       </div>
+
+//       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+//         <div className="card">Total Income: {totalIncome}</div>
+//         <div className="card">Total Expense: {totalExpense}</div>
+//         <div className="card">Balance: {balance}</div>
+//       </div>
+
+//       <div className="flex justify-between mb-4">
+//         <h2 className="text-xl font-bold">Income</h2>
+//         <button  className="btn btn-sm">Download</button>
+//         {/* onClick={() => handleDownloadExcel(income, "Income")} */}
+//       </div>
+//       <ul>
+//         {income.map(i => (
+//           <li key={i._id} className="flex justify-between">
+//             <span>{i.icon} {i.source} - {i.amount} ({new Date(i.date).toLocaleDateString()})</span>
+//             <button onClick={() => handleDelete(i._id, "income")} className="btn btn-sm btn-red">Delete</button>
+//           </li>
+//         ))}
+//       </ul>
+
+//       <div className="flex justify-between mt-6 mb-4">
+//         <h2 className="text-xl font-bold">Expenses</h2>
+//         <button className="btn btn-sm">Download</button>
+//         {/* onClick={() => handleDownloadExcel(expense, "Expense") */}
+//       </div>
+//       <ul>
+//         {expense.map(e => (
+//           <li key={e._id} className="flex justify-between">
+//             <span>{e.icon} {e.category} - {e.amount} ({new Date(e.date).toLocaleDateString()})</span>
+//             <button onClick={() => handleDelete(e._id, "expense")} className="btn btn-sm btn-red">Delete</button>
+//           </li>
+//         ))}
+//       </ul>
+
+//       {showIncomeModal && <AddIncome closeModal={() => setShowIncomeModal(false)} />}
+//       {showExpenseModal && <AddExpense closeModal={() => setShowExpenseModal(false)} />}
+//     </div>
+//   );
+// };
+
+// export default Dashboard;
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteIncomeExpense, fetchDashboardData } from "../../features/dashboardSlice";
+import { fetchDashboardData, deleteIncomeExpense } from "../../features/dashboardSlice";
 import AddIncome from "../../components/AddIncome";
 import AddExpense from "../../components/AddExpence";
-// import { fetchDashboardData, deleteIncomeExpense, handleDownloadExcel } from "../redux/dashboardSlice";
-// import Addincome from "./Addincome";
-// import Addexpense from "./Addexpense";
+
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  Legend
+} from "recharts";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { income, expense, totalIncome, totalExpense, balance, loading } = useSelector(state => state.dashboard);
-  
+  const { income, expense, totalIncome, totalExpense, balance, chartData } =
+    useSelector((state) => state.dashboard);
+
   const [showIncomeModal, setShowIncomeModal] = useState(false);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
 
@@ -221,53 +306,106 @@ const Dashboard = () => {
   }, [dispatch]);
 
   const handleDelete = (id, type) => {
-    if (window.confirm("Are you sure?")) {
-      dispatch(deleteIncomeExpense({ id, show: type }));
+    if (window.confirm("Delete this item?")) {
+      dispatch(deleteIncomeExpense({ id, type }));
     }
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-      <div className="mb-4">
-        <button onClick={() => setShowIncomeModal(true)} className="btn">Add Income</button>
-        <button onClick={() => setShowExpenseModal(true)} className="btn ml-2">Add Expense</button>
+    <div className="min-h-screen bg-gray-900 text-white px-6 py-6 space-y-8">
+
+      {/* HEADER */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">📊 Dashboard</h1>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowIncomeModal(true)}
+            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
+          >
+            + Income
+          </button>
+
+          <button
+            onClick={() => setShowExpenseModal(true)}
+            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
+          >
+            + Expense
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="card">Total Income: {totalIncome}</div>
-        <div className="card">Total Expense: {totalExpense}</div>
-        <div className="card">Balance: {balance}</div>
+      {/* CARDS */}
+      <div className="grid md:grid-cols-3 gap-6">
+
+        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+          <p className="text-gray-400">Total Income</p>
+          <h2 className="text-green-400 text-2xl font-bold">Rs {totalIncome}</h2>
+        </div>
+
+        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+          <p className="text-gray-400">Total Expense</p>
+          <h2 className="text-red-400 text-2xl font-bold">Rs {totalExpense}</h2>
+        </div>
+
+        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+          <p className="text-gray-400">Balance</p>
+          <h2 className="text-blue-400 text-2xl font-bold">Rs {balance}</h2>
+        </div>
       </div>
 
-      <div className="flex justify-between mb-4">
-        <h2 className="text-xl font-bold">Income</h2>
-        <button  className="btn btn-sm">Download</button>
-        {/* onClick={() => handleDownloadExcel(income, "Income")} */}
+      {/* CHART */}
+      <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700 h-[350px]">
+        <h2 className="mb-4 text-lg font-semibold">📈 Monthly Overview</h2>
+
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData}>
+            <CartesianGrid stroke="#374151" />
+            <XAxis dataKey="month" stroke="#9ca3af" />
+            <YAxis stroke="#9ca3af" />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="income" fill="#22c55e" />
+            <Bar dataKey="expense" fill="#ef4444" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
-      <ul>
-        {income.map(i => (
-          <li key={i._id} className="flex justify-between">
-            <span>{i.icon} {i.source} - {i.amount} ({new Date(i.date).toLocaleDateString()})</span>
-            <button onClick={() => handleDelete(i._id, "income")} className="btn btn-sm btn-red">Delete</button>
-          </li>
+
+      {/* INCOME */}
+      <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+        <h2 className="text-green-400 mb-4">💰 Income</h2>
+
+        {income.map((i) => (
+          <div key={i._id} className="flex justify-between border-b border-gray-700 py-2">
+            <span>{i.icon} {i.source}</span>
+            <div className="flex gap-4">
+              <span className="text-green-400">+{i.amount}</span>
+              <button onClick={() => handleDelete(i._id, "income")} className="text-red-400">
+                Delete
+              </button>
+            </div>
+          </div>
         ))}
-      </ul>
-
-      <div className="flex justify-between mt-6 mb-4">
-        <h2 className="text-xl font-bold">Expenses</h2>
-        <button className="btn btn-sm">Download</button>
-        {/* onClick={() => handleDownloadExcel(expense, "Expense") */}
       </div>
-      <ul>
-        {expense.map(e => (
-          <li key={e._id} className="flex justify-between">
-            <span>{e.icon} {e.category} - {e.amount} ({new Date(e.date).toLocaleDateString()})</span>
-            <button onClick={() => handleDelete(e._id, "expense")} className="btn btn-sm btn-red">Delete</button>
-          </li>
-        ))}
-      </ul>
 
+      {/* EXPENSE */}
+      <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+        <h2 className="text-red-400 mb-4">💸 Expense</h2>
+
+        {expense.map((e) => (
+          <div key={e._id} className="flex justify-between border-b border-gray-700 py-2">
+            <span>{e.icon} {e.category}</span>
+            <div className="flex gap-4">
+              <span className="text-red-400">-{e.amount}</span>
+              <button onClick={() => handleDelete(e._id, "expense")} className="text-red-400">
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* MODALS */}
       {showIncomeModal && <AddIncome closeModal={() => setShowIncomeModal(false)} />}
       {showExpenseModal && <AddExpense closeModal={() => setShowExpenseModal(false)} />}
     </div>

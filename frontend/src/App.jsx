@@ -15,6 +15,7 @@ import { checkAuth } from './features/authSlice';
 import { fetchDashboardData } from './features/dashboardSlice';
 
 function App() {
+  
   // const dispatch = useDispatch();
   // const user = useSelector((state) => state.auth?.user);
 
