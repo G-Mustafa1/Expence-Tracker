@@ -51,10 +51,11 @@ export const checkAuth = createAsyncThunk(
   "auth/checkAuth",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await api.get("/api/auth/getMe", {
+      const { data } = await api.get("/api/auth/userInfo", {
         withCredentials: true,
       });
-      return data.user;
+      console.log("user info", data);
+      return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Not authenticated");
     }
@@ -79,7 +80,7 @@ const authSlice = createSlice({
     initialState: {
         user: null,
         token: null,
-        loading: false,
+        loading: true,
         error: null
     },
     reducers: {},
@@ -115,7 +116,7 @@ const authSlice = createSlice({
             })
             .addCase(checkAuth.fulfilled, (state, action) => {
                 state.loading = false;
-                state.user = action.payload;
+                state.user = action.payload || null;
             })
             .addCase(checkAuth.rejected, (state, action) => {
                 state.loading = false;

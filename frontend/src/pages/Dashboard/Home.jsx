@@ -1,415 +1,171 @@
-// import React from "react";
-
-// const Home = () => {
-//   return (
-//     <div className="space-y-6">
-
-//       {/* Heading */}
-//       <div>
-//         <h1 className="text-3xl font-bold text-gray-800">
-//           Welcome Back 👋
-//         </h1>
-//         <p className="text-gray-500">
-//           Here’s what’s happening with your finances today.
-//         </p>
-//       </div>
-
-//       {/* Cards */}
-//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-//         {/* Income Card */}
-//         <div className="bg-white shadow-md rounded-2xl p-5 hover:shadow-xl transition">
-//           <h2 className="text-lg font-semibold text-gray-600">
-//             Total Income
-//           </h2>
-//           <p className="text-2xl font-bold text-green-600 mt-2">
-//             $5,200
-//           </p>
-//         </div>
-
-//         {/* Expense Card */}
-//         <div className="bg-white shadow-md rounded-2xl p-5 hover:shadow-xl transition">
-//           <h2 className="text-lg font-semibold text-gray-600">
-//             Total Expenses
-//           </h2>
-//           <p className="text-2xl font-bold text-red-500 mt-2">
-//             $2,800
-//           </p>
-//         </div>
-
-//         {/* Balance Card */}
-//         <div className="bg-white shadow-md rounded-2xl p-5 hover:shadow-xl transition">
-//           <h2 className="text-lg font-semibold text-gray-600">
-//             Balance
-//           </h2>
-//           <p className="text-2xl font-bold text-blue-600 mt-2">
-//             $2,400
-//           </p>
-//         </div>
-
-//       </div>
-
-//       {/* Recent Activity */}
-//       <div className="bg-white shadow-md rounded-2xl p-6">
-//         <h2 className="text-xl font-semibold mb-4 text-gray-700">
-//           Recent Transactions
-//         </h2>
-
-//         <ul className="space-y-3">
-
-//           <li className="flex justify-between border-b pb-2">
-//             <span>Salary</span>
-//             <span className="text-green-600 font-semibold">+$3000</span>
-//           </li>
-
-//           <li className="flex justify-between border-b pb-2">
-//             <span>Groceries</span>
-//             <span className="text-red-500 font-semibold">-$150</span>
-//           </li>
-
-//           <li className="flex justify-between border-b pb-2">
-//             <span>Electric Bill</span>
-//             <span className="text-red-500 font-semibold">-$100</span>
-//           </li>
-
-//           <li className="flex justify-between">
-//             <span>Freelance</span>
-//             <span className="text-green-600 font-semibold">+$500</span>
-//           </li>
-
-//         </ul>
-//       </div>
-
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-
-
-
-// // pages/Home.js
-// import { useEffect } from "react";
-// import { useSelector, useDispatch } from "react-redux";
-
-// // import { fetchDashboardData, fetchRecentMonthsTrend } from "../features/dashboardSlice";
-// import AddIncome from "../../components/AddIncome";
-// import AddExpense from "../../components/AddExpence";
-// import { fetchDashboardData } from "../../features/dashboardSlice";
-// import { openModal } from "../../features/modalSlice";
-
-// const Home = () => {
-//   const dispatch = useDispatch();
-//   const { income, expense, totalIncome, totalExpense, balance, recentMonthsTrend, loading } =
-//     useSelector((s) => s.dashboard);
-//   const modal = useSelector((s) => s.modal);
-
-//   useEffect(() => {
-//     dispatch(fetchDashboardData());
-//     // dispatch(fetchRecentMonthsTrend());
-//   }, [dispatch]);
-
-//   const monthName = new Date().toLocaleDateString("en-US", {
-//     month: "long",
-//     year: "numeric",
-//   });
-
-//   const recentExpenses = [...expense].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
-//   const recentIncome = [...income].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3);
-
-//   return (
-//     <div className="p-4 space-y-6 text-white bg-slate-900 min-h-screen">
-//       {/* Modal */}
-//       {modal.isOpen && (
-//         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-//           <div className="bg-slate-800 p-6 rounded-xl w-full max-w-md relative">
-//             <button
-//               className="absolute top-2 right-2"
-//               onClick={() => dispatch(closeModal())}
-//             >
-//               ✕
-//             </button>
-//             {modal.type === "income" ? <AddIncome /> : <AddExpense />}
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Header & Buttons */}
-//       <div className="flex justify-between items-center">
-//         <h1 className="text-3xl font-bold">Financial Dashboard</h1>
-//         <div className="space-x-2">
-//           <button
-//             className="bg-green-600 px-4 py-2 rounded"
-//             onClick={() => dispatch(openModal("income"))}
-//           >
-//             + Income
-//           </button>
-//           <button
-//             className="bg-rose-600 px-4 py-2 rounded"
-//             onClick={() => dispatch(openModal("expense"))}
-//           >
-//             + Expense
-//           </button>
-//         </div>
-//       </div>
-
-//       {/* Summary Cards */}
-//       <div className="grid grid-cols-3 gap-4">
-//         <div className="bg-slate-700 p-4 rounded">
-//           <h3>Total Income</h3>
-//           <p>${totalIncome}</p>
-//         </div>
-//         <div className="bg-slate-700 p-4 rounded">
-//           <h3>Total Expense</h3>
-//           <p>${totalExpense}</p>
-//         </div>
-//         <div className="bg-slate-700 p-4 rounded">
-//           <h3>Balance</h3>
-//           <p>${balance}</p>
-//         </div>
-//       </div>
-
-//       {/* Recent Transactions */}
-//       <div className="grid grid-cols-2 gap-4">
-//         <div className="bg-slate-700 p-4 rounded">
-//           <h3>Recent Expenses</h3>
-//           {recentExpenses.map((exp, i) => (
-//             <div key={i} className="flex justify-between">
-//               <span>{exp.category}</span>
-//               <span>-${exp.amount}</span>
-//             </div>
-//           ))}
-//         </div>
-//         <div className="bg-slate-700 p-4 rounded">
-//           <h3>Recent Income</h3>
-//           {recentIncome.map((inc, i) => (
-//             <div key={i} className="flex justify-between">
-//               <span>{inc.source}</span>
-//               <span>+${inc.amount}</span>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { deleteIncomeExpense, fetchDashboardData } from "../../features/dashboardSlice";
-// import AddIncome from "../../components/AddIncome";
-// import AddExpense from "../../components/AddExpence";
-// // import { fetchDashboardData, deleteIncomeExpense, handleDownloadExcel } from "../redux/dashboardSlice";
-// // import Addincome from "./Addincome";
-// // import Addexpense from "./Addexpense";
-
-// const Dashboard = () => {
-//   const dispatch = useDispatch();
-//   const { income, expense, totalIncome, totalExpense, balance, loading } = useSelector(state => state.dashboard);
-  
-//   const [showIncomeModal, setShowIncomeModal] = useState(false);
-//   const [showExpenseModal, setShowExpenseModal] = useState(false);
-
-//   useEffect(() => {
-//     dispatch(fetchDashboardData());
-//   }, [dispatch]);
-
-//   const handleDelete = (id, type) => {
-//     if (window.confirm("Are you sure?")) {
-//       dispatch(deleteIncomeExpense({ id, show: type }));
-//     }
-//   };
-
-//   return (
-//     <div className="p-4">
-//       <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-//       <div className="mb-4">
-//         <button onClick={() => setShowIncomeModal(true)} className="btn">Add Income</button>
-//         <button onClick={() => setShowExpenseModal(true)} className="btn ml-2">Add Expense</button>
-//       </div>
-
-//       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-//         <div className="card">Total Income: {totalIncome}</div>
-//         <div className="card">Total Expense: {totalExpense}</div>
-//         <div className="card">Balance: {balance}</div>
-//       </div>
-
-//       <div className="flex justify-between mb-4">
-//         <h2 className="text-xl font-bold">Income</h2>
-//         <button  className="btn btn-sm">Download</button>
-//         {/* onClick={() => handleDownloadExcel(income, "Income")} */}
-//       </div>
-//       <ul>
-//         {income.map(i => (
-//           <li key={i._id} className="flex justify-between">
-//             <span>{i.icon} {i.source} - {i.amount} ({new Date(i.date).toLocaleDateString()})</span>
-//             <button onClick={() => handleDelete(i._id, "income")} className="btn btn-sm btn-red">Delete</button>
-//           </li>
-//         ))}
-//       </ul>
-
-//       <div className="flex justify-between mt-6 mb-4">
-//         <h2 className="text-xl font-bold">Expenses</h2>
-//         <button className="btn btn-sm">Download</button>
-//         {/* onClick={() => handleDownloadExcel(expense, "Expense") */}
-//       </div>
-//       <ul>
-//         {expense.map(e => (
-//           <li key={e._id} className="flex justify-between">
-//             <span>{e.icon} {e.category} - {e.amount} ({new Date(e.date).toLocaleDateString()})</span>
-//             <button onClick={() => handleDelete(e._id, "expense")} className="btn btn-sm btn-red">Delete</button>
-//           </li>
-//         ))}
-//       </ul>
-
-//       {showIncomeModal && <AddIncome closeModal={() => setShowIncomeModal(false)} />}
-//       {showExpenseModal && <AddExpense closeModal={() => setShowExpenseModal(false)} />}
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
-
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchDashboardData, deleteIncomeExpense } from "../../features/dashboardSlice";
+import React, { useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { FaRupeeSign } from "react-icons/fa6";
+import { Plus, Wallet, TrendingUp, TrendingDown, LayoutDashboard, PieChart as PieIcon } from "lucide-react";
+import { ResponsiveContainer, RadialBarChart, RadialBar, PieChart, Pie, Cell, PolarAngleAxis, AreaChart, Area, XAxis, CartesianGrid, Tooltip } from "recharts";
+import { Toaster } from "react-hot-toast";
 import AddIncome from "../../components/AddIncome";
 import AddExpense from "../../components/AddExpence";
+import { openModal } from "../../features/modalSlice";
 
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  Legend
-} from "recharts";
+const COLORS = ["#22c55e", "#f43f5e", "#3b82f6", "#a855f7", "#facc15"];
+const formatDateKey = (d) => new Date(d).toISOString().slice(0, 10);
 
-const Dashboard = () => {
+export default function Home() {
   const dispatch = useDispatch();
-  const { income, expense, totalIncome, totalExpense, balance, chartData } =
-    useSelector((state) => state.dashboard);
+  const dashboard = useSelector((s) => s.dashboard);
+  const modal = useSelector((s) => s.modal);
 
-  const [showIncomeModal, setShowIncomeModal] = useState(false);
-  const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const { totalIncome = 0, totalExpense = 0, balance = 0 } = dashboard || {};
+  const incomeArr = dashboard?.income || [];
+  const expenseArr = dashboard?.expense || [];
 
-  useEffect(() => {
-    dispatch(fetchDashboardData());
-  }, [dispatch]);
+  const chartData = useMemo(() => {
+    const today = new Date();
+    return [...Array(30)].map((_, i) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (29 - i));
+      const key = formatDateKey(d);
+      return {
+        shortDate: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+        income: incomeArr.filter((t) => formatDateKey(t.createdAt || t.date) === key).reduce((s, t) => s + Number(t.amount || 0), 0),
+        expense: expenseArr.filter((t) => formatDateKey(t.createdAt || t.date) === key).reduce((s, t) => s + Number(t.amount || 0), 0),
+      };
+    });
+  }, [incomeArr, expenseArr]);
 
-  const handleDelete = (id, type) => {
-    if (window.confirm("Delete this item?")) {
-      dispatch(deleteIncomeExpense({ id, type }));
-    }
-  };
+  const categoryData = useMemo(() => {
+    const map = {};
+    expenseArr.forEach((e) => { map[e.category] = (map[e.category] || 0) + Number(e.amount || 0); });
+    return Object.entries(map).map(([name, value]) => ({ name, value })).sort((a,b) => b.value - a.value);
+  }, [expenseArr]);
+
+  const max = Math.max(totalIncome, totalExpense, 1);
+  const radialData = [
+    { name: "Income", value: totalIncome, fill: "#22c55e" },
+    { name: "Expense", value: totalExpense, fill: "#f43f5e" },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white px-6 py-6 space-y-8">
+    <div className="p-6 space-y-10 text-slate-900 min-h-screen">
+      <Toaster position="top-right" toastOptions={{ style: { zIndex: 99999 } }} />
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">📊 Dashboard</h1>
-
-        <div className="flex gap-3">
-          <button
-            onClick={() => setShowIncomeModal(true)}
-            className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg"
-          >
-            + Income
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold flex items-center gap-2">
+            <LayoutDashboard className="text-indigo-400" /> Dashboard
+          </h1>
+          <p className="text-slate-400 mt-1 text-sm">Welcome back! Here's your financial overview.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button onClick={() => dispatch(openModal("income"))} className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 rounded-xl font-semibold flex items-center gap-2 text-white">
+            <Plus className="w-4 h-4" /> Add Income
           </button>
-
-          <button
-            onClick={() => setShowExpenseModal(true)}
-            className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg"
-          >
-            + Expense
+          <button onClick={() => dispatch(openModal("expense"))} className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 rounded-xl font-semibold flex items-center gap-2 text-white">
+            <Plus className="w-4 h-4" /> Add Expense
           </button>
         </div>
       </div>
 
-      {/* CARDS */}
-      <div className="grid md:grid-cols-3 gap-6">
-
-        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-          <p className="text-gray-400">Total Income</p>
-          <h2 className="text-green-400 text-2xl font-bold">Rs {totalIncome}</h2>
-        </div>
-
-        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-          <p className="text-gray-400">Total Expense</p>
-          <h2 className="text-red-400 text-2xl font-bold">Rs {totalExpense}</h2>
-        </div>
-
-        <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-          <p className="text-gray-400">Balance</p>
-          <h2 className="text-blue-400 text-2xl font-bold">Rs {balance}</h2>
-        </div>
-      </div>
-
-      {/* CHART */}
-      <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700 h-[350px]">
-        <h2 className="mb-4 text-lg font-semibold">📈 Monthly Overview</h2>
-
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData}>
-            <CartesianGrid stroke="#374151" />
-            <XAxis dataKey="month" stroke="#9ca3af" />
-            <YAxis stroke="#9ca3af" />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="income" fill="#22c55e" />
-            <Bar dataKey="expense" fill="#ef4444" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* INCOME */}
-      <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-        <h2 className="text-green-400 mb-4">💰 Income</h2>
-
-        {income.map((i) => (
-          <div key={i._id} className="flex justify-between border-b border-gray-700 py-2">
-            <span>{i.icon} {i.source}</span>
-            <div className="flex gap-4">
-              <span className="text-green-400">+{i.amount}</span>
-              <button onClick={() => handleDelete(i._id, "income")} className="text-red-400">
-                Delete
-              </button>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          { label: "Total Revenue", value: totalIncome, color: "text-emerald-400", icon: TrendingUp, bg: "bg-emerald-700/30" },
+          { label: "Total Spending", value: totalExpense, color: "text-rose-400", icon: TrendingDown, bg: "bg-rose-700/30" },
+          { label: "Net Balance", value: balance, color: "text-indigo-400", icon: Wallet, bg: "bg-indigo-700/30" },
+        ].map((k) => (
+          <div key={k.label} className="relative overflow-hidden rounded-2xl p-6 bg-white/[0.05] border border-white/10 shadow-md">
+            <div className={`absolute -right-3 -top-3 w-20 h-20 blur-2xl rounded-full ${k.bg}`} />
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`p-2 rounded-xl ${k.bg} ${k.color}`}><k.icon className="w-5 h-5" /></div>
+              <p className="text-slate-400 text-xs uppercase tracking-widest">{k.label}</p>
             </div>
+            <p className={`text-2xl md:text-3xl font-bold flex items-center gap-1 ${k.color}`}>
+              <FaRupeeSign className="text-base opacity-60" /> {k.value?.toLocaleString()}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* EXPENSE */}
-      <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
-        <h2 className="text-red-400 mb-4">💸 Expense</h2>
-
-        {expense.map((e) => (
-          <div key={e._id} className="flex justify-between border-b border-gray-700 py-2">
-            <span>{e.icon} {e.category}</span>
-            <div className="flex gap-4">
-              <span className="text-red-400">-{e.amount}</span>
-              <button onClick={() => handleDelete(e._id, "expense")} className="text-red-400">
-                Delete
-              </button>
-            </div>
+      {/* Charts */}
+      <div className="grid xl:grid-cols-3 gap-8">
+        <div className="xl:col-span-2 bg-white p-6 rounded-2xl border border-white/10 shadow-md">
+          <div className="flex justify-between">
+            <h3 className="text-slate-900 font-bold text-sm mb-4 uppercase">30-Day Cashflow</h3>
+          <div className="flex gap-2">
+            <span className="text-sm">Income</span>
+            <span className="text-sm">Expense</span>
           </div>
-        ))}
+          </div>
+          <ResponsiveContainer width="100%" height={200}>
+            <AreaChart data={chartData}>
+              <defs>
+                <linearGradient id="incomeG" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#22c55e" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff20" vertical={false} />
+              <XAxis dataKey="shortDate" axisLine={false} tickLine={false} tick={{ fill: "#94a3b8", fontSize: 10 }} />
+              <Tooltip contentStyle={{ background: "#0f172a", border: "1px solid #ffffff20", borderRadius: "12px" }} />
+              <Area type="monotone" dataKey="income" stroke="#22c55e" strokeWidth={2} fill="url(#incomeG)" />
+              <Area type="monotone" dataKey="expense" stroke="#f43f5e" strokeWidth={2} fill="transparent" strokeDasharray="5 5" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl border border-white/10 flex flex-col items-center justify-center shadow-md">
+          <h3 className="text-slate-900 font-bold text-sm mb-3 uppercase">Budget Ratio</h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <RadialBarChart data={radialData} innerRadius="65%" outerRadius="100%" startAngle={180} endAngle={0}>
+              <PolarAngleAxis type="number" domain={[0,max]} tick={false}/>
+              <RadialBar dataKey="value" cornerRadius={20}/>
+            </RadialBarChart>
+          </ResponsiveContainer>
+          <p className="mt-2 text-sm text-slate-400 uppercase tracking-wider">Available Balance</p>
+          <p className="text-2xl font-bold text-slate-900">Rs.{balance.toLocaleString()}</p>
+        </div>
       </div>
 
-      {/* MODALS */}
-      {showIncomeModal && <AddIncome closeModal={() => setShowIncomeModal(false)} />}
-      {showExpenseModal && <AddExpense closeModal={() => setShowExpenseModal(false)} />}
+      {/* Top Expenses */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1 bg-white p-6 rounded-2xl border border-white/10 shadow-md">
+          <div className="flex items-center gap-2 mb-4 text-slate-900">
+            <PieIcon className="w-5 h-5 text-indigo-400" />
+            <h3 className="font-bold text-sm uppercase tracking-widest">Top Expenses</h3>
+          </div>
+          <div className="h-64">
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie data={categoryData} innerRadius={50} outerRadius={80} dataKey="value" paddingAngle={5}>
+                  {categoryData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 space-y-1">
+            {categoryData.slice(0,3).map((c,i)=>(
+              <div key={i} className="flex justify-between text-xs font-semibold">
+                <span className="flex items-center gap-1 text-slate-400">
+                  <span className="w-2 h-2 rounded-full" style={{background: COLORS[i % COLORS.length]}}></span>
+                  {c.name}
+                </span>
+                <span className="text-slate-900">Rs.{c.value.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Modals */}
+      {modal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+          <div className="bg-slate-900 rounded-2xl w-full max-w-2xl p-4">
+            {modal.type === "income" ? <AddIncome /> : <AddExpense />}
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Dashboard;
+}

@@ -39,12 +39,13 @@ authRouter.post("/register", async (req, res) => {
         // ✅ Use 'user', not 'newUser'
         const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
 
+        // ✅ COOKIE SETTINGS (Vercel Ready)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false, // localhost testing ke liye
-            sameSite: 'lax',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             path: "/",
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
 
         res.status(201).json({
@@ -77,22 +78,14 @@ authRouter.post("/login", async (req, res) => {
         // ✅ Use 'user' instead of 'newUser'
         const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
 
-        // ✅ Cookie settings for localhost testing
+        // ✅ COOKIE SETTINGS (Vercel Ready)
         res.cookie("token", token, {
             httpOnly: true,
-            secure: false, // localhost ke liye false
-            sameSite: 'lax',
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             path: "/",
             maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
-
-        const result = {
-            _id: user._id,
-            fullName: user.fullName,
-            emailAddress: user.emailAddress,
-            password: user.password
-        }
-        console.log(result);
 
 
         res.status(200).json({
@@ -109,13 +102,16 @@ authRouter.post("/login", async (req, res) => {
 authRouter.get('/userInfo', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password')
-        res.status(200).json(user)
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User not found",
             });
         }
+        res.status(200).json({
+            // isLogin: true,
+            user: user
+        })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -249,39 +245,40 @@ authRouter.post('/logout', (req, res) => {
 //   }
 // };
 
-authRouter.get("/getMe", protect, async (req, res) => {
-  try {
-    const userId = req.user?._id;
+// authRouter.get("/getMe", protect, async (req, res) => {
+//   try {
+//     const userId = req.user?._id;
 
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized access. User not found in request.",
-      });
-    }
+//     if (!userId) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Unauthorized access. User not found in request.",
+//       });
+//     }
 
-    const user = await User.findById(userId).select("-password");
+//     const user = await User.findById(userId).select("-password");
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "User not found",
+//       });
+//     }
 
-    return res.status(200).json({
-      success: true,
-      message: "User details fetched successfully",
-      user,
-    });
-  } catch (error) {
-    console.error("❌ Error in getMe:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-});
+//     return res.status(200).json({
+//       success: true,
+//       message: "User details fetched successfully",
+//       user,
+//     });
+//   } catch (error) {
+//     console.error("❌ Error in getMe:", error.message);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// });
+
 
 module.exports = {
     authRouter

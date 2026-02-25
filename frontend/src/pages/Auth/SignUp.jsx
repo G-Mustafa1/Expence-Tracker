@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { register } from '../../features/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -17,9 +17,11 @@ const SignUp = () => {
 
     useEffect(() => {
         if (user) {
-            navigate("/");
+            navigate("/dashboard");
         }
     }, [user, navigate]);
+
+    // if (user) return <Navigate to="/" replace />;
 
     const handleSignup = (e) => {
         e.preventDefault();
@@ -27,14 +29,17 @@ const SignUp = () => {
 
         if (!fullName.trim()) {
             setErrors("Full name is required");
+            return;
         }
 
         if (!email.trim()) {
             setErrors("email is required")
+            return;
         }
 
         if (!password.trim() || password.length < 6) {
             setErrors("Password must be at least 6 characters");
+            return;
         }
 
         setErrors("")
@@ -64,7 +69,7 @@ const SignUp = () => {
 
             {(localError || error) && (
                 <div className="bg-red-100 text-red-600 text-sm p-2 rounded">
-                    {localError || error}
+                    {localError || error?.message}
                 </div>
             )}
 

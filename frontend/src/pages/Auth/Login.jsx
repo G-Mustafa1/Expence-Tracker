@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../../features/authSlice'
+import { login } from '../../features/authSlice';
 
 const Login = () => {
     const [emailAddress, setEmail] = useState("");
@@ -14,10 +14,14 @@ const Login = () => {
     const { user, loading, error } = useSelector(state => state.auth);
 
     useEffect(() => {
+        console.log('user')
+        console.log(user);
         if (user) {
             navigate("/dashboard");
         }
     }, [user, navigate]);
+
+    //   if (user) return <Navigate to="/dashboard" replace />;
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -48,7 +52,7 @@ const Login = () => {
 
             {(localError || error) && (
                 <div className="bg-red-100 text-red-600 text-sm p-2 rounded">
-                    {localError || error}
+                    {localError || error.message || "Something went wrong"}
                 </div>
             )}
 

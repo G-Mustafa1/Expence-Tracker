@@ -29,10 +29,12 @@ import { api } from "../api/api";
 
 // Fetch dashboard data
 export const fetchDashboardData = createAsyncThunk(
-  "dashboard/fetchData",
+  "dashboard/fetchDashboardData",
   async (_, { rejectWithValue }) => {
+    console.log("Fetching dashboard data...", rejectWithValue);
     try {
       const { data } = await api.get("/api/dashboard/dashboard-data", { withCredentials: true });
+      console.log(data);
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Failed to fetch dashboard data");
@@ -45,6 +47,7 @@ export const fetchDashboardData = createAsyncThunk(
 export const addIncomeExpense = createAsyncThunk(
   "dashboard/addIncomeExpense",
   async ({ show, payload }, { rejectWithValue }) => {
+    console.log("Adding", show, payload);
     try {
       const { data } = await api.post(`/api/${show}/add-${show}`, payload, { withCredentials: true });
       return { type: show, item: data[show] || data.expense || data.income || data };
@@ -58,6 +61,7 @@ export const addIncomeExpense = createAsyncThunk(
 export const deleteIncomeExpense = createAsyncThunk(
   "dashboard/deleteIncomeExpense",
   async ({ id, show }, { rejectWithValue }) => {
+    console.log("Deleting", show, id);
     try {
       await api.delete(`/api/${show}/delete-${show}/${id}`, { withCredentials: true });
       return { id, type: show };
