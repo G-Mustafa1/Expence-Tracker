@@ -38,51 +38,21 @@ incomeRouter.post("/add-income", protect, async (req, res) => {
 })
 
 incomeRouter.get("/get-income", protect, async (req, res) => {
+    const userId = req.user?._id;
+
     try {
-        const userId = req.user?._id;
-
-        if (!userId) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized",
-            });
-        }
-
-        const { month, year } = req.query;
-
-        let filter = {
-            userId: userId, // 🔒 sirf logged-in user ke income
-        };
-
-        if (month && year) {
-            const startDate = new Date(year, month - 1, 1);
-            const endDate = new Date(year, month, 0, 23, 59, 59);
-
-            filter.date = {
-                $gte: startDate,
-                $lte: endDate,
-            };
-        }
-
-        const incomes = await Income.find(filter).sort({ date: -1 });
-
-        res.status(200).json({
-            success: true,
-            data: incomes,
-        });
-
+        const incomes = await Income.find({ userId }).sort({ createdAt: -1 });
+        res.status(200).json(incomes);
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+        res.status(500).json({ message: error.message });
     }
 });
 
 incomeRouter.delete("/delete-income/:id", protect, async (req, res) => {
+    console.log(req.params.id);
     try {
         const deletedIncome = await Income.findByIdAndDelete(req.params.id)
-        res.json(deletedIncome)
+        res.json({deletedIncome, message: "Income Deleted Successfully"})
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

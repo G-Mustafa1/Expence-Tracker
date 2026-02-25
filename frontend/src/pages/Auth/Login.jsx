@@ -1,13 +1,44 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { login } from '../../features/authSlice'
 
 const Login = () => {
-    const handleLogin = () => {
+    const [emailAddress, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [localError, setLocalError] = useState("");
 
-    }
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const { user, loading, error } = useSelector(state => state.auth);
+
+    useEffect(() => {
+        if (user) {
+            navigate("/dashboard");
+        }
+    }, [user, navigate]);
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        if (!emailAddress.trim()) {
+            setLocalError("Email is required");
+            return;
+        }
+
+        if (!password.trim() || password.length < 6) {
+            setLocalError("Password must be at least 6 characters");
+            return;
+        }
+
+        setLocalError("");
+
+        dispatch(login({ emailAddress, password }));
+    };
+
     return (
         <form onSubmit={handleLogin} className="space-y-6">
-
             <div>
                 <h2 className="text-3xl font-bold text-gray-800">Welcome Back 👋</h2>
                 <p className="text-gray-500 text-sm mt-1">
@@ -15,16 +46,21 @@ const Login = () => {
                 </p>
             </div>
 
+            {(localError || error) && (
+                <div className="bg-red-100 text-red-600 text-sm p-2 rounded">
+                    {localError || error}
+                </div>
+            )}
+
             <div className="space-y-4">
 
                 <div>
                     <label className="text-sm text-gray-600">Email</label>
                     <input
                         type="email"
-                        name="email"
                         placeholder="example@gmail.com"
-                        // value={form.email}
-                        // onChange={handleChange}
+                        value={emailAddress}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                     />
                 </div>
@@ -33,20 +69,25 @@ const Login = () => {
                     <label className="text-sm text-gray-600">Password</label>
                     <input
                         type="password"
-                        name="password"
                         placeholder="••••••••"
-                        // value={form.password}
-                        // onChange={handleChange}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                     />
                 </div>
 
             </div>
 
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition">
-                Login
+            {/* Button */}
+            <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition disabled:opacity-50"
+            >
+                {loading ? "Logging in..." : "Login"}
             </button>
 
+            {/* Signup */}
             <p className="text-sm text-center text-gray-600">
                 Don’t have an account?{" "}
                 <Link to="/signup" className="text-blue-600 font-medium hover:underline">
@@ -55,7 +96,6 @@ const Login = () => {
             </p>
 
         </form>
-
     )
 }
 

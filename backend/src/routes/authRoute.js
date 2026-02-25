@@ -86,6 +86,15 @@ authRouter.post("/login", async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000, // 1 day
         });
 
+        const result = {
+            _id: user._id,
+            fullName: user.fullName,
+            emailAddress: user.emailAddress,
+            password: user.password
+        }
+        console.log(result);
+
+
         res.status(200).json({
             success: true,
             message: "Login Successful",
@@ -97,7 +106,7 @@ authRouter.post("/login", async (req, res) => {
     }
 });
 
-authRouter.get('/userInfo', protect ,async (req, res) => {  
+authRouter.get('/userInfo', protect, async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password')
         res.status(200).json(user)
@@ -112,6 +121,21 @@ authRouter.get('/userInfo', protect ,async (req, res) => {
     }
 })
 
+authRouter.post('/logout', (req, res) => {
+    try {
+        // ✅ Also clear cookie cross-site correctly
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            path: "/",
+        });
+        res.status(200).json({ message: "Logout successful" });
+    } catch (error) {
+        console.error('Error during logout:', error.message);
+        res.status(500).send({ error: 'Error during logout', message: error.message });
+    }
+});
 // authRouter.post("/register", async (req, res) => {
 //     const { fullName, emailAddress, password, } = req.body;
 //     const file = req.file
@@ -225,42 +249,42 @@ authRouter.get('/userInfo', protect ,async (req, res) => {
 //   }
 // };
 
-// exports.getMe = async (req, res) => {
-//   try {
-//     const userId = req.user?._id;
+authRouter.get("/getMe", protect, async (req, res) => {
+  try {
+    const userId = req.user?._id;
 
-//     if (!userId) {
-//       return res.status(401).json({
-//         success: false,
-//         message: "Unauthorized access. User not found in request.",
-//       });
-//     }
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access. User not found in request.",
+      });
+    }
 
-//     const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId).select("-password");
 
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
-//     return res.status(200).json({
-//       success: true,
-//       message: "User details fetched successfully",
-//       user,
-//     });
-//   } catch (error) {
-//     console.error("❌ Error in getMe:", error.message);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Internal server error",
-//     });
-//   }
-// };
+    return res.status(200).json({
+      success: true,
+      message: "User details fetched successfully",
+      user,
+    });
+  } catch (error) {
+    console.error("❌ Error in getMe:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
 
 module.exports = {
-    authRouter 
+    authRouter
 }
 
 
