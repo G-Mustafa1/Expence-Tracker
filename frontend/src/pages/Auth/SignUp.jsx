@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { register } from '../../features/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
+
 
 const SignUp = () => {
     const dispatch = useDispatch();
@@ -59,7 +61,6 @@ const SignUp = () => {
 
         dispatch(register({ fullName, emailAddress: email, password }))
     }
-
     return (
         <form onSubmit={handleSignup} className="space-y-6">
 
@@ -135,4 +136,6 @@ const SignUp = () => {
     )
 }
 
-export default SignUp;
+export default SignUp
+
+

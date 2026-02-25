@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { checkAuth } from './features/authSlice';
 import { fetchDashboardData } from './features/dashboardSlice';
 import AuthLayout from './layout/AuthLayout'
-import SignUp from './pages/auth/SignUp';
 import ProtectedRoute from './components/ProtectedRoute'
 import Dashboard from './layout/Dashboard';
 import Home from './pages/Dashboard/Home';
@@ -13,6 +12,7 @@ import Expence from './pages/Dashboard/Expence';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './components/Loader';
 import Login from './pages/auth/Login';
+import SignUp from './pages/auth/SignUp';
 
 function App() {
   const dispatch = useDispatch();
