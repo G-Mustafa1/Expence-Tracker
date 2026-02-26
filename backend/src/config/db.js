@@ -1,24 +1,26 @@
 const mongoose = require("mongoose");
 
-let isConnected = false; // Track connection status
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-  if (isConnected) {
-    console.log("✅ MongoDB: Reusing existing connection");
-    return;
+  if (cached.conn) {
+    console.log("✅ Using cached DB connection");
+    return cached.conn;
   }
 
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URL, )
-
-    isConnected = conn.connections[0].readyState === 1;
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error("❌ MongoDB Connection Error:", error.message);
-    process.exit(1);
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGO_URL).then((mongoose) => {
+      console.log("✅ MongoDB Connected");
+      return mongoose;
+    });
   }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 };
 
-module.exports = {
-    connectDB
-};
+module.exports = { connectDB };
