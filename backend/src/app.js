@@ -5,15 +5,16 @@ const {authRouter} = require('./routes/authRoute')
 const incomeRouter = require('./routes/incomeRoute')
 const expenseRouter = require('./routes/expanceRoute')
 const dashboardRouter = require('./routes/dashboardRoute')
+require("dotenv").config();
 const app = express()
 
 app.use(express.json())
 app.use(cookieParser())
+
   
-app.use(
-  cors({
+app.use( cors({ 
     origin: [
-      "http://localhost:5173",
+      process.env.BASE_URL,
     ],
     credentials: true,
   })
