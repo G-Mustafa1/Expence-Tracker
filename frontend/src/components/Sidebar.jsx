@@ -13,7 +13,7 @@ const Sidebar = () => {
 
   const { user, loading } = useSelector((state) => state.auth);
 
-  console.log("user", user);
+  // console.log("user", user);
 
 
   const navLinks = [
