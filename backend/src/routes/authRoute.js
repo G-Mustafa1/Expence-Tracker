@@ -9,7 +9,7 @@ const { upload } = require('../config/cloudniry');
 
 authRouter.post("/register", upload.single('profileImg'), async (req, res) => {
     const { fullName, emailAddress, password } = req.body;
-    const profileImg = req.file ? req.file.path : null; // optional image
+    const profileImg = req.file ? req.file.path : undefined; // optional image
     try {
         if (!fullName || !emailAddress || !password) {
             return res.status(400).json({ success: false, message: "Please fill all required fields" });
