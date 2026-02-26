@@ -1,28 +1,25 @@
-const { v2: cloudinary } = require('cloudinary');
-const { Readable } = require('stream');
-const dotenv = require("dotenv")
-dotenv.config()
+const multer = require("multer");
+const { v2: cloudinary } = require("cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.CLOUDINARY_API_KEY,
+  api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadToCloudinary = (buffer) => {
 
-    
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "ExpenseTracker",
+    allowedFormats: ["jpeg", "png", "jpg"],
+  }
+})
 
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder: "ExpenseTracker" },
-      (err, result) => {
-        if (err) reject(err);
-        else resolve(result);
-      }
-    );
-    Readable.from(buffer).pipe(stream);
-  });
-};
+const upload = multer({storage});
 
-module.exports = { cloudinary, uploadToCloudinary};
+module.exports = {
+  upload, 
+  cloudinary
+}

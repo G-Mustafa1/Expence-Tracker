@@ -13,7 +13,7 @@ const Sidebar = () => {
 
   const { user, loading } = useSelector((state) => state.auth);
 
-  // console.log("user", user);
+  console.log("user", user);
 
 
   const navLinks = [
@@ -43,7 +43,7 @@ const Sidebar = () => {
         />
         <div>
           <p className="text-sm font-semibold">{user.fullName}</p>
-          <p className="text-xs text-gray-300">{user.email}</p>
+          <p className="text-xs text-gray-300">{user.emailAddress}</p>
         </div>
       </div>
     );

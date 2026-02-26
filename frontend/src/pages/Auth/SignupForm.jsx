@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { register } from '../../features/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { UploadCloud } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const SignupForm = () => {
@@ -14,7 +15,8 @@ const SignupForm = () => {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [profileImage, setProfileImge] = useState(null);
+    const [preview, setPreview] = useState(null);
     const [localError, setErrors] = useState("");
 
     useEffect(() => {
@@ -27,38 +29,55 @@ const SignupForm = () => {
 
     // if (user) return <Navigate to="/" replace />;
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+        if (!allowedTypes.includes(file.type)) {
+            setErrors("Only image files (jpeg, jpg, png, webp) are allowed!");
+            setProfileImge(null);
+            setPreview(null);
+            return;
+        }
+
+        setProfileImge(file);
+        setPreview(URL.createObjectURL(file));
+        setErrors("");
+    }
+
     const handleSignup = (e) => {
         e.preventDefault();
-
 
         if (!fullName.trim()) {
             setErrors("Full name is required");
             return;
         }
-
         if (!email.trim()) {
             setErrors("email is required")
             return;
         }
-
         if (!password.trim() || password.length < 6) {
             setErrors("Password must be at least 6 characters");
             return;
         }
 
+        const formData = new FormData();
+        formData.append("fullName", fullName);
+        formData.append("emailAddress", email);
+        formData.append("password", password);
+
+        if (profileImage) {
+            formData.append("profileImg", profileImage); 
+        }
+
+        dispatch(register(formData));
+
         setErrors("")
 
-        // if (Object.keys(newErrors).length > 0) return;
 
-        console.log("Sending Data:", {
-            fullName,
-            email,
-            password
-        });
 
-        console.log(error, user)
-
-        dispatch(register({ fullName, emailAddress: email, password }))
+        // dispatch(register({ fullName, emailAddress: email, password }))
     }
     return (
         <form onSubmit={handleSignup} className="space-y-6">
@@ -77,32 +96,47 @@ const SignupForm = () => {
             )}
 
             <div className="space-y-4">
-
-                {/* Full Name */}
-                <div>
-                    <label className="text-sm text-gray-600">Full Name</label>
-                    <input
-                        type="text"
-                        placeholder="Your Name"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="flex flex-col items-center gap-2">
+                    <label className="cursor-pointer">
+                        <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden hover:border-blue-500 transition relative">
+                            {preview ? (
+                                <img src={preview} alt="preview" className="w-full h-full object-cover" />
+                            ) : (
+                                <UploadCloud className="text-gray-400 w-8 h-8" />
+                            )}
+                        </div>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                        />
+                    </label>
+                    <p className="text-xs text-gray-400">Upload Profile Image</p>
                 </div>
 
-                {/* Email */}
-                <div>
-                    <label className="text-sm text-gray-600">Email</label>
-                    <input
-                        type="email"
-                        placeholder="example@gmail.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="flex justify-between gap-5">
+                    <div className='flex-1'>
+                        <label className="text-sm text-gray-600">Full Name</label>
+                        <input
+                            type="text"
+                            placeholder="Your Name"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+                    <div className='flex-1'>
+                        <label className="text-sm text-gray-600">Email</label>
+                        <input
+                            type="email"
+                            placeholder="example@gmail.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
                 </div>
-
-                {/* Password */}
                 <div>
                     <label className="text-sm text-gray-600">Password</label>
                     <input
