@@ -5,8 +5,7 @@ import { register } from '../../features/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 
-
-const SignUp = () => {
+const SignupForm = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -136,6 +135,4 @@ const SignUp = () => {
     )
 }
 
-export default SignUp
-
-
+export default SignupForm

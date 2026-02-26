@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { checkAuth } from './features/authSlice';
 import { fetchDashboardData } from './features/dashboardSlice';
@@ -11,8 +11,8 @@ import Income from './pages/Dashboard/Income';
 import Expence from './pages/Dashboard/Expence';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './components/Loader';
-import Login from './pages/auth/Login';
-import SignUp from './pages/auth/SignUp';
+import LoginForm from './pages/Auth/LoginForm';
+import SignupForm from './pages/Auth/SignupForm';
 
 function App() {
   const dispatch = useDispatch();
@@ -29,7 +29,7 @@ function App() {
     }
   }, [user, dispatch]);
 
-  
+
   if (loading) {
     return <Loader />;
   }
@@ -38,8 +38,8 @@ function App() {
     <Routes>
       {/* Auth routes */}
       <Route element={<AuthLayout />}>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route path="/" element={<LoginForm />} />
+        <Route path="/signup" element={<SignupForm />} />
       </Route>
 
       {/* Protected routes */}
