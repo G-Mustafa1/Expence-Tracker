@@ -16,8 +16,8 @@ import SignupForm from './pages/Auth/SignupForm';
 
 function App() {
   const dispatch = useDispatch();
-  const { user, loading } = useSelector((state) => state.auth);
-
+  const { user, isAuth } = useSelector((state) => state.auth);
+  
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -30,9 +30,9 @@ function App() {
   }, [user, dispatch]);
 
 
-  if (loading) {
-    return <Loader />;
-  }
+  // if (isAuth) {
+  //   return <Loader />;
+  // }
 
   return (
     <Routes>

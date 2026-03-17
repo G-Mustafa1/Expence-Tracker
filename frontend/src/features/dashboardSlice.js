@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "../api/api";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import toast from "react-hot-toast";
+
 
 // Fetch dashboard data
 export const fetchDashboardData = createAsyncThunk(
@@ -47,9 +51,32 @@ export const deleteIncomeExpense = createAsyncThunk(
   }
 );
 
-const dashboardSlice = createSlice({
-  name: "dashboard",
-  initialState: {
+export const handleDownloadExcel = (dataArray, type) => {
+  if (!dataArray || dataArray.length === 0) {
+    alert(`No ${type} data to download!`);
+    return;
+  }
+
+  const worksheet = XLSX.utils.json_to_sheet(
+    dataArray.map((item, index) => ({
+      S_No: index + 1,
+      Icon: item.icon,
+      Source: item.source || item.category,
+      Date: new Date(item.date).toLocaleDateString(),
+    }))
+  );
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, `${type}s`);
+
+  // Convert workbook to blob and download
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+  saveAs(blob, `${type}_List_${new Date().toISOString().split("T")[0]}.xlsx`);
+};
+
+const initialState = {
     income: [],
     expense: [],
     totalIncome: 0,
@@ -57,7 +84,11 @@ const dashboardSlice = createSlice({
     balance: 0,
     loading: false,
     error: null,
-  },
+  };
+
+const dashboardSlice = createSlice({
+  name: "dashboard",
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder

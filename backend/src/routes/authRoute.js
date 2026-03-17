@@ -2,10 +2,10 @@ const express = require('express')
 const authRouter = express.Router();
 const bcrypt = require("bcrypt");
 const validator = require("validator");
-const jwt = require('jsonwebtoken');
-const protect = require('../middleware/auth');
 const { User } = require('../models/Users');
 const { upload } = require('../config/cloudniry');
+const generateToken = require('../utils/generateToken');
+const protect = require('../middleware/auth');
 
 authRouter.post("/register", upload.single('profileImg'), async (req, res) => {
     const { fullName, emailAddress, password } = req.body;
@@ -39,17 +39,6 @@ authRouter.post("/register", upload.single('profileImg'), async (req, res) => {
             profileImg
         });
 
-        const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
-
-        // ✅ COOKIE SETTINGS (Vercel Ready)
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            path: "/",
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-        });
-
         res.status(201).json({
             id: user._id,
             user,
@@ -77,23 +66,12 @@ authRouter.post("/login", async (req, res) => {
         if (!isMatch)
             return res.status(400).json({ success: false, message: "Invalid credentials" });
 
-        // ✅ Use 'user' instead of 'newUser'
-        const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            path: "/",
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-        });
-
+        generateToken(user, res);
 
         res.status(200).json({
             success: true,
             message: "Login Successful",
             user,
-            token
         });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -129,7 +107,7 @@ authRouter.post('/logout', (req, res) => {
         res.status(200).json({ message: "Logout successful" });
     } catch (error) {
         console.error('Error during logout:', error.message);
-        res.status(500).send({ error: 'Error during logout', message: error.message });
+        res.status(500).json({ error: 'Error during logout', message: error.message });
     }
 });
 

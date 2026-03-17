@@ -50,7 +50,6 @@ export default function AddIncome() {
           </button>
         </div>
 
-        {/* Amount */}
         <div className="mb-4">
           <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Deposit Amount</label>
           <div className="flex items-center px-4 py-2 bg-gray-50 rounded-xl border border-gray-200 mt-1">
@@ -66,9 +65,7 @@ export default function AddIncome() {
           </div>
         </div>
 
-        {/* Icon & Source & Date */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {/* Icon */}
           <div>
             <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Select Icon</label>
             <div className="flex flex-wrap gap-2 mt-2 p-2 rounded-xl bg-gray-50 border border-gray-200">
@@ -81,7 +78,6 @@ export default function AddIncome() {
             </div>
           </div>
 
-          {/* Source & Date */}
           <div className="space-y-3">
             <div>
               <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Source</label>
