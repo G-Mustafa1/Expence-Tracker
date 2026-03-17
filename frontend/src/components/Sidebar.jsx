@@ -21,8 +21,8 @@ const Sidebar = () => {
   ];
 
   const handleLogout = () => {
-    toast.success("Logout successful!", { id: "logout-toast" });
     dispatch(logout());
+    toast.success("Logout successful!", { id: "logout-toast" });
     navigate("/");
   };
 
