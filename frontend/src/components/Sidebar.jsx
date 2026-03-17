@@ -15,15 +15,19 @@ const Sidebar = () => {
   const { user, loading } = useSelector((state) => state.auth);
 
   const navLinks = [
-    { name: "Home",     path: "/dashboard",          icon: LayoutDashboard },
-    { name: "Income",   path: "/dashboard/income",   icon: Wallet          },
-    { name: "Expenses", path: "/dashboard/expenses", icon: CreditCard      },
+    { name: "Home", path: "/dashboard", icon: LayoutDashboard },
+    { name: "Income", path: "/dashboard/income", icon: Wallet },
+    { name: "Expenses", path: "/dashboard/expenses", icon: CreditCard },
   ];
 
   const handleLogout = () => {
-    dispatch(logout());
-    toast.success("Logout successful!", { id: "logout-toast" });
-    navigate("/");
+    try {
+      dispatch(logout());
+      navigate("/");
+      toast.success("Logout successful!");
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const UserProfile = () => {
