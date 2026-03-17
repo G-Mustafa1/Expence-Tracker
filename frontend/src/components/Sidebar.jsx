@@ -21,13 +21,8 @@ const Sidebar = () => {
   ];
 
   const handleLogout = () => {
-    try {
       dispatch(logout());
-      navigate("/");
       toast.success("Logout successful!");
-    } catch (error) {
-      toast.error(error.message);
-    }
   };
 
   const UserProfile = () => {
