@@ -4,10 +4,10 @@ A simple full-stack Expense Tracker application that helps users manage their da
 
 # 🚀 Links
 ### 🌐 Frontend 
-🔗 [Expense Tracker Frontend](http://localhost:5173/dashboard)
+🔗 [Expense Tracker Frontend](https://expence-tracker-psi-six.vercel.app/)
 
 ### ⚙️ Backend  
-🔗 [Expense Tracker Backend](http://localhost:5000)
+🔗 [Expense Tracker Backend](https://expence-tracker-86kn.vercel.app/)
 
 # 📌 Features
 
